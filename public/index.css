@@ -1,0 +1,127 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;  /* Centraliza horizontalmente */
+    justify-content: flex-start; /* Começa do topo em vez de centralizar verticalmente */
+    min-height: 100vh;
+    padding: 30px 15px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif;
+}
+
+.formulario {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 800px;  /* Reduzido de 900px */
+    padding: 20px;
+    border: 1px solid #ddd;  /* Borda mais suave */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+    height: auto;  /* Em vez de 50% */
+    background-color: #f9f9f9;
+}
+
+.flightdata, .passageiros {
+    display: flex;
+    flex-direction: column;
+    width: 48%;  /* Permite espaço entre as duas colunas */
+}
+
+.campo-form {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+label {
+    width: 140px;  /* Um pouco mais largo para acomodar textos maiores */
+    text-align: right;
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+input {
+    flex: 1;
+    height: 30px;
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 0;  /* Remover margin-bottom, já está no campo-form */
+}
+
+.botoes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 15px;
+}
+
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+
+
+.resultado {
+    width: 100%;
+    max-width: 900px;  /* Mais estreito que o container */
+    margin-top: 20px;
+}
+
+.tabela-resultados {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-size: 14px;  /* Texto menor para economizar espaço */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.tabela-resultados th, 
+.tabela-resultados td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;  /* Centralizar conteúdo das células */
+}
+
+.tabela-resultados th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.tabela-resultados tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tabela-resultados tr:hover {
+    background-color: #f1f1f1;
+}
+
+.btn-editar, .btn-excluir {
+    padding: 4px 8px;
+    margin: 0 3px;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.btn-editar {
+    background-color: #777777;
+    color: white;
+}
+
+.btn-excluir {
+    background-color: #777777;
+    color: white;
+}
