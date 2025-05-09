@@ -15,20 +15,20 @@
     justify-content: space-between;
     align-items: flex-start;
     width: 100%;
-    max-width: 800px;  /* Reduzido de 900px */
+    max-width: 858px; 
     padding: 20px;
-    border: 1px solid #ddd;  /* Borda mais suave */
+    border: 1px solid #ddd;  
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     margin-bottom: 25px;
-    height: auto;  /* Em vez de 50% */
+    height: auto;  
     background-color: #f9f9f9;
 }
 
 .flightdata, .passageiros {
     display: flex;
     flex-direction: column;
-    width: 48%;  /* Permite espaço entre as duas colunas */
+    width: 48%;  
 }
 
 .campo-form {
@@ -56,11 +56,12 @@ input {
 
 .botoes {
     display: flex;
-    justify-content: center;
+    justify-content: end;
     align-items: center;
     gap: 10px;
     width: 100%;
     margin-top: 15px;
+    margin-right: 245px;
 }
 
 button {
@@ -71,7 +72,21 @@ button {
     font-weight: 500;
 }
 
-
+.btn-limpar {
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    color: black;
+    font-weight: 500;
+    text-decoration: none;
+    background-color: buttonface; /* Mantém a cor padrão de botões */
+    display: inline-block;
+    font-family: inherit; /* Herda a fonte da página */
+    font-size: inherit; /* Herda o tamanho da fonte */
+    line-height: normal; /* Corrige a altura da linha */
+    text-align: center;
+}
 
 .resultado {
     width: 100%;
@@ -99,9 +114,7 @@ button {
     font-weight: bold;
 }
 
-.tabela-resultados tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
+
 
 .tabela-resultados tr:hover {
     background-color: #f1f1f1;
@@ -124,4 +137,86 @@ button {
 .btn-excluir {
     background-color: #777777;
     color: white;
+}
+
+.tabela-responsiva {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 15px;
+}
+
+/* Opcional: ajuste a largura das colunas para uma aparência mais equilibrada */
+.tabela-resultados th:nth-child(1) {
+    width: 40%; /* Coluna do passageiro */
+}
+.tabela-resultados th:nth-child(2) {
+    width: 30%; /* Coluna do voo */
+}
+.tabela-resultados th:nth-child(3) {
+    width: 30%; /* Coluna da data */
+}
+
+/***Paginação***/
+/* Estilos para paginação Bootstrap */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.pagination .page-item .page-link {
+    color: #333;
+    background-color: #fff;
+    border-color: #ddd;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #418dff;
+    border-color: #777;
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #f5f5f5;
+    color: #333;
+    border-color: #ddd;
+}
+
+/* Garante que a tabela e a paginação estejam alinhadas */
+.resultado {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Mantém os links da paginação com tamanho razoável */
+.page-link {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .formulario {
+        flex-direction: column;
+        align-items: stretch; /* Alinha os itens para ocupar toda a largura */
+    }
+
+    .flightdata, .passageiros {
+        width: 100%; /* Faz com que os campos ocupem toda a largura */
+    }
+
+    .botoes {
+        margin-right: 0; /* Remove o espaçamento à direita */
+        justify-content: center; /* Centraliza os botões */
+    }
+
+    .tabela-resultados {
+        font-size: 12px; /* Texto menor para telas menores */
+
+    }
 }
