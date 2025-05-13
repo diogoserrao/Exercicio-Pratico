@@ -92,7 +92,7 @@
                             <td>{{ date('d/m/Y', strtotime($resultado->data)) }}</td>
                             <td>{{ $resultado->origem }}</td>
                             <td>{{ $resultado->destino }}</td>
-                            <td>{{ number_format($resultado->preco / 100, 2, ',', '.') }}€</td>
+                            <td>{{ number_format($resultado->preco, 2, ',', '.') }}€</td>
                         </tr>
                         @endforeach
                         @else

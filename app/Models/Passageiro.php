@@ -10,9 +10,10 @@ class Passageiro extends Model
 {
     use HasFactory;
 
-     protected $fillable = ['nome', 'identificacao', 'nif', 'telefone', 'email'];
+    protected $table = 'passageiro';
+    protected $fillable = ['nome', 'identificacao', 'nif', 'telefone', 'email'];
 
-    public function reservas()
+    public function reserva()
     {
         return $this->hasMany(Reserva::class);
     }

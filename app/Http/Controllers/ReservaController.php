@@ -68,7 +68,7 @@ class ReservaController extends Controller
         }
 
         // Executa a busca
-        $resultados = $query->paginate(2);
+        $resultados = $query->paginate(3);
 
         // Mantém os filtros na paginação
         $resultados->appends($filtros);
@@ -85,7 +85,9 @@ class ReservaController extends Controller
      */
     public function create()
     {
-        //
+        $voo = Voo::all();
+        $passageiro = Passageiro::all();
+        return view('admin.reserva.create');
     }
 
     /**
@@ -93,16 +95,69 @@ class ReservaController extends Controller
      */
     public function store(Request $request)
     {
-        $vooId = $request->input('voo_id');
+        $request->validate([
+            'voo' => 'required|string|max:10',
+            'data' => 'required|date',
+            'origem' => 'required|string|max:50',
+            'destino' => 'required|string|max:50',
+            'reserva' => 'required|string|unique:reserva,numero_reserva|max:20',
+            'preco' => 'required|numeric|min:0|max:9999.99', 
+            'name' => 'required|string|max:100',
+            'nif' => 'required|string|max:9',
+            'cc' => 'required|string|max:20',
+        ]);
 
-        $totalReservas = Reserva::where('voo_id', $vooId)->count();
-
-        if ($totalReservas >= 220) {
-            return back()->withErrors(['voo_id' => 'Este voo já atingiu o limite de 220 reservas.']);
+        // Adiciona prefixo TP ao número do voo se não existir
+        $numeroVoo = $request->voo;
+        if (strpos($numeroVoo, 'TP') !== 0) {
+            $numeroVoo = 'TP' . $numeroVoo;
         }
 
-        Reserva::create($request->all());
-        return redirect()->route('reservas.index')->with('success', 'Reserva criada com sucesso.');
+        // Adiciona prefixo R ao número da reserva se não existir
+        $numeroReserva = $request->reserva;
+        if (strpos($numeroReserva, 'RES') !== 0) {
+            $numeroReserva = 'RES' . $numeroReserva;
+        }
+
+        // Cria ou busca o voo
+        $voo = Voo::firstOrCreate(
+            ['numero_voo' => $numeroVoo],
+            [
+                'data' => $request->data,
+                'origem' => $request->origem,
+                'destino' => $request->destino,
+            ]
+        );
+
+        // Cria ou busca o passageiro
+        $passageiro = Passageiro::firstOrCreate(
+            [
+                'nif' => $request->nif,
+
+            ],
+            [
+                'nome' => $request->name,
+                'identificacao' => $request->cc,
+                'email' => $request->nif . '@exemplo.com', // valor padrão, ajuste se quiser
+                'telefone' => '000000000',
+            ]
+        );
+
+        // Limite de reservas por voo
+        $totalReservas = Reserva::where('voo_id', $voo->id)->count();
+        if ($totalReservas >= 220) {
+            return back()->withErrors(['voo' => 'Este voo já atingiu o limite de 220 reservas.']);
+        }
+
+        // Cria a reserva corretamente
+        Reserva::create([
+            'numero_reserva' => $numeroReserva,
+            'preco' => $request->preco,
+            'voo_id' => $voo->id,
+            'passageiro_id' => $passageiro->id,
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Reserva criada com sucesso!');
     }
 
     /**
@@ -116,17 +171,57 @@ class ReservaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $reserva = \App\Models\Reserva::findOrFail($id);
+        $voo = $reserva->voo;
+        $passageiro = $reserva->passageiro;
+        return view('admin.reserva.edit', compact('reserva', 'voo', 'passageiro'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'voo' => 'required|string|max:10',
+            'data' => 'required|date',
+            'origem' => 'required|string|max:50',
+            'destino' => 'required|string|max:50',
+            'reserva' => 'required|string|max:20',
+            'preco' => 'required|numeric|min:0|max:9999.99',
+            'name' => 'required|string|max:100',
+            'nif' => 'required|string|max:9',
+            'cc' => 'required|string|max:20',
+        ]);
+
+        $reserva = Reserva::findOrFail($id);
+
+        // Atualiza voo
+        $voo = $reserva->voo;
+        $voo->update([
+            'numero_voo' => $request->voo,
+            'data' => $request->data,
+            'origem' => $request->origem,
+            'destino' => $request->destino,
+        ]);
+
+        // Atualiza passageiro
+        $passageiro = $reserva->passageiro;
+        $passageiro->update([
+            'nome' => $request->name,
+            'nif' => $request->nif,
+            'identificacao' => $request->cc,
+        ]);
+
+        // Atualiza reserva
+        $reserva->update([
+            'numero_reserva' => $request->reserva,
+            'preco' => $request->preco,
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Reserva atualizada com sucesso!');
     }
 
     /**
@@ -134,7 +229,10 @@ class ReservaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $reserva = Reserva::findOrFail($id);
+        $reserva->delete();
+
+        return redirect()->route('dashboard')->with('success', 'Reserva excluída com sucesso!');
     }
 
     public function buscar(Request $request)

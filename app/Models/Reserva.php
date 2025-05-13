@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reserva extends Model
 {
-    protected $fillable = ['numero_reserva', 'valor', 'voo_id', 'passageiro_id'];
+    protected $table = 'reserva';
+    protected $fillable = ['numero_reserva', 'preco', 'voo_id', 'passageiro_id'];
 
     public function voo()
     {
