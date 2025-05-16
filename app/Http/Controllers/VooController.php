@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reserva;
 use Illuminate\Http\Request;
+use App\Models\Voo;
 
 class VooController extends Controller
 {
@@ -29,7 +30,14 @@ class VooController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $voo = Voo::firstOrCreate(
+            ['numero_voo' => $request->numero_voo],
+            [
+                'data' => $request->data,
+                'origem_id' => $request->origem_id,
+                'destino_id' => $request->destino_id,
+            ]
+        );
     }
 
     /**

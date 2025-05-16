@@ -90,8 +90,8 @@
                             <td>{{ $resultado->numero_reserva }}</td>
                             <td>{{ $resultado->numero_voo }}</td>
                             <td>{{ date('d/m/Y', strtotime($resultado->data)) }}</td>
-                            <td>{{ $resultado->origem }}</td>
-                            <td>{{ $resultado->destino }}</td>
+                            <td>{{ $resultado->origem_nome }}</td>
+                            <td>{{ $resultado->destino_nome }}</td>
                             <td>{{ number_format($resultado->preco, 2, ',', '.') }}€</td>
                         </tr>
                         @endforeach

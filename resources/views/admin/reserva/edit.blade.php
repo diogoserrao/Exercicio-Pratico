@@ -30,14 +30,21 @@
                     <label for="Data">Data do voo</label>
                     <input type="date" id="Data" name="data" class="form-control" value="{{ old('data', $voo->data) }}" required>
                 </div>
-                <div class="col-md-3 campo-form mb-2">
-                    <label for="Origem">Origem</label>
-                    <input type="text" id="Origem" name="origem" class="form-control" value="{{ old('origem', $voo->origem) }}" required>
-                </div>
-                <div class="col-md-3 campo-form mb-2">
-                    <label for="Destino">Destino</label>
-                    <input type="text" id="Destino" name="destino" class="form-control" value="{{ old('destino', $voo->destino) }}" required>
-                </div>
+
+                <select id="Origem" name="origem_id" class="form-control" required>
+                    <option value="">Selecione a origem</option>
+                    @foreach($cidades as $cidade)
+                    <option value="{{ $cidade->id }}" {{ old('origem_id') == $cidade->id ? 'selected' : '' }}>{{ $cidade->nome }}</option>
+                    @endforeach
+                </select>
+
+                <select id="Destino" name="destino_id" class="form-control" required>
+                    <option value="">Selecione o destino</option>
+                    @foreach($cidades as $cidade)
+                    <option value="{{ $cidade->id }}" {{ old('destino_id') == $cidade->id ? 'selected' : '' }}>{{ $cidade->nome }}</option>
+                    @endforeach
+                </select>
+
             </div>
         </fieldset>
 

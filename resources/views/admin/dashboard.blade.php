@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,9 +33,9 @@
                     <td>{{ $resultado->numero_reserva }}</td>
                     <td>{{ $resultado->numero_voo }}</td>
                     <td>{{ date('d/m/Y', strtotime($resultado->data)) }}</td>
-                    <td>{{ $resultado->origem }}</td>
-                    <td>{{ $resultado->destino }}</td>
-                    <td>{{  number_format($resultado->preco, 2, ',', '.') }}€</td>
+                    <td>{{ $resultado->origem_nome }}</td>
+                    <td>{{ $resultado->destino_nome }}</td>
+                    <td>{{ number_format($resultado->preco, 2, ',', '.') }}€</td>
                     <td>
                         <a href="{{ route('reservas.edit', $resultado->id) }}" class="btn-editar">Editar</a>
                         <form action="{{ route('reservas.destroy', $resultado->id) }}" method="POST" style="display:inline;">

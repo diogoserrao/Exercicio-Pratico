@@ -15,8 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('numero_voo')->unique();
             $table->date('data');
-            $table->string('origem');
-            $table->string('destino');
+            $table->unsignedBigInteger('origem_id');
+            $table->unsignedBigInteger('destino_id');
+
+            $table->foreign('origem_id')->references('id')->on('cidades')->onDelete('restrict');
+            $table->foreign('destino_id')->references('id')->on('cidades')->onDelete('restrict');
+
             $table->timestamps();
         });
     }

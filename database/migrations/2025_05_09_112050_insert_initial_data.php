@@ -12,44 +12,55 @@ return new class extends Migration
      */
     public function up(): void
     {
+        $cidades = [
+            ['nome' => 'Lisboa', 'pais' => 'Portugal', 'created_at' => now(), 'updated_at' => now()],
+            ['nome' => 'Porto', 'pais' => 'Portugal', 'created_at' => now(), 'updated_at' => now()],
+            ['nome' => 'Faro', 'pais' => 'Portugal', 'created_at' => now(), 'updated_at' => now()],
+            ['nome' => 'Madrid', 'pais' => 'Espanha', 'created_at' => now(), 'updated_at' => now()],
+            ['nome' => 'Paris', 'pais' => 'França', 'created_at' => now(), 'updated_at' => now()],
+            ['nome' => 'Fuchal', 'pais' => 'Portugal', 'created_at' => now(), 'updated_at' => now()],
+        ];
+
+        DB::table('cidades')->insert($cidades);
+
         // Inserir dados na tabela de voos
         $voos = [
             [
                 'numero_voo' => 'TP1234',
                 'data' => '2025-06-15',
-                'origem' => 'Lisboa',
-                'destino' => 'Porto',
+                'origem_id' => 1,
+                'destino_id' => 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'numero_voo' => 'TP2345',
                 'data' => '2025-06-20',
-                'origem' => 'Porto',
-                'destino' => 'Faro',
+                'origem_id' => 2,
+                'destino_id' => 3,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'numero_voo' => 'TP3456',
                 'data' => '2025-06-25',
-                'origem' => 'Lisboa',
-                'destino' => 'Madrid',
+                'origem_id' => 1,
+                'destino_id' => 4,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'numero_voo' => 'TP4567',
                 'data' => '2025-06-30',
-                'origem' => 'Porto',
-                'destino' => 'Paris',
+                'origem_id' => 2,
+                'destino_id' => 5,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ];
-        
+
         DB::table('voo')->insert($voos);
-        
+
         // Inserir dados na tabela de passageiros
         $passageiros = [
             [
@@ -89,9 +100,9 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
         ];
-        
+
         DB::table('passageiro')->insert($passageiros);
-        
+
         // Inserir dados na tabela de reservas
         $reservas = [
             [
@@ -135,10 +146,10 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
         ];
-        
+
         DB::table('reserva')->insert($reservas);
     }
-    
+
     /**
      * Reverse the migrations.
      */
@@ -148,5 +159,6 @@ return new class extends Migration
         DB::table('reserva')->truncate();
         DB::table('passageiro')->truncate();
         DB::table('voo')->truncate();
+        DB::table('cidades')->truncate();
     }
 };

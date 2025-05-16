@@ -1,10 +1,12 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use App\Models\Reserva;
 use App\Models\Voo;
 use App\Models\Passageiro;
+use App\Models\Cidade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -15,26 +17,25 @@ class ReservaController extends Controller
      */
     public function index(Request $request)
     {
-        // Captura apenas campos com valores (filtros aplicados)
         $filtros = array_filter($request->all());
 
-        // Inicia a consulta com joins
         $query = DB::table('reserva')
             ->join('voo', 'reserva.voo_id', '=', 'voo.id')
             ->join('passageiro', 'reserva.passageiro_id', '=', 'passageiro.id')
+            ->join('cidades as origem', 'voo.origem_id', '=', 'origem.id')
+            ->join('cidades as destino', 'voo.destino_id', '=', 'destino.id')
             ->select(
                 'reserva.id',
                 'reserva.numero_reserva',
                 'reserva.preco',
                 'voo.numero_voo',
                 'voo.data',
-                'voo.origem',
-                'voo.destino',
+                'origem.nome as origem_nome',
+                'destino.nome as destino_nome',
                 'passageiro.nome',
                 'passageiro.nif'
             );
 
-        // Aplica filtros se fornecidos
         if (!empty($filtros['voo'])) {
             $query->where('voo.numero_voo', 'like', '%' . $filtros['voo'] . '%');
         }
@@ -43,12 +44,12 @@ class ReservaController extends Controller
             $query->whereDate('voo.data', $filtros['data']);
         }
 
-        if (!empty($filtros['origem'])) {
-            $query->where('voo.origem', 'like', '%' . $filtros['origem'] . '%');
+        if (!empty($filtros['origem_id'])) {
+            $query->where('voo.origem_id', $filtros['origem_id']);
         }
 
-        if (!empty($filtros['destino'])) {
-            $query->where('voo.destino', 'like', '%' . $filtros['destino'] . '%');
+        if (!empty($filtros['destino_id'])) {
+            $query->where('voo.destino_id', $filtros['destino_id']);
         }
 
         if (!empty($filtros['reserva'])) {
@@ -67,16 +68,16 @@ class ReservaController extends Controller
             $query->where('passageiro.identificacao', 'like', '%' . $filtros['cc'] . '%');
         }
 
-        // Executa a busca
         $resultados = $query->paginate(3);
-
-        // Mantém os filtros na paginação
         $resultados->appends($filtros);
 
-        // Retorna a view com os resultados e mantém os filtros para preencher o formulário
+        // Envie as cidades para o filtro se necessário
+        $cidades = Cidade::all();
+
         return view('index', [
             'resultados' => $resultados,
-            'filtros' => $filtros
+            'filtros' => $filtros,
+            'cidades' => $cidades
         ]);
     }
 
@@ -85,9 +86,8 @@ class ReservaController extends Controller
      */
     public function create()
     {
-        $voo = Voo::all();
-        $passageiro = Passageiro::all();
-        return view('admin.reserva.create');
+        $cidades = Cidade::all();
+        return view('admin.reserva.create', compact('cidades'));
     }
 
     /**
@@ -98,10 +98,10 @@ class ReservaController extends Controller
         $request->validate([
             'voo' => 'required|string|max:10',
             'data' => 'required|date',
-            'origem' => 'required|string|max:50',
-            'destino' => 'required|string|max:50',
+            'origem_id' => 'required|exists:cidades,id',
+            'destino_id' => 'required|exists:cidades,id',
             'reserva' => 'required|string|unique:reserva,numero_reserva|max:20',
-            'preco' => 'required|numeric|min:0|max:9999.99', 
+            'preco' => 'required|numeric|min:0|max:9999.99',
             'name' => 'required|string|max:100',
             'nif' => 'required|string|max:9',
             'cc' => 'required|string|max:20',
@@ -113,7 +113,7 @@ class ReservaController extends Controller
             $numeroVoo = 'TP' . $numeroVoo;
         }
 
-        // Adiciona prefixo R ao número da reserva se não existir
+        // Adiciona prefixo RES ao número da reserva se não existir
         $numeroReserva = $request->reserva;
         if (strpos($numeroReserva, 'RES') !== 0) {
             $numeroReserva = 'RES' . $numeroReserva;
@@ -121,11 +121,12 @@ class ReservaController extends Controller
 
         // Cria ou busca o voo
         $voo = Voo::firstOrCreate(
-            ['numero_voo' => $numeroVoo],
+            ['numero_voo' => $numeroVoo, 'data' => $request->data, 'origem_id' => $request->origem_id, 'destino_id' => $request->destino_id],
             [
+                'numero_voo' => $numeroVoo,
                 'data' => $request->data,
-                'origem' => $request->origem,
-                'destino' => $request->destino,
+                'origem_id' => $request->origem_id,
+                'destino_id' => $request->destino_id,
             ]
         );
 
@@ -133,12 +134,11 @@ class ReservaController extends Controller
         $passageiro = Passageiro::firstOrCreate(
             [
                 'nif' => $request->nif,
-
             ],
             [
                 'nome' => $request->name,
                 'identificacao' => $request->cc,
-                'email' => $request->nif . '@exemplo.com', // valor padrão, ajuste se quiser
+                'email' => $request->nif . '@exemplo.com',
                 'telefone' => '000000000',
             ]
         );
@@ -161,22 +161,15 @@ class ReservaController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
     {
-        $reserva = \App\Models\Reserva::findOrFail($id);
+        $reserva = Reserva::findOrFail($id);
         $voo = $reserva->voo;
         $passageiro = $reserva->passageiro;
-        return view('admin.reserva.edit', compact('reserva', 'voo', 'passageiro'));
+        $cidades = Cidade::all();
+        return view('admin.reserva.edit', compact('reserva', 'voo', 'passageiro', 'cidades'));
     }
 
     /**
@@ -187,8 +180,8 @@ class ReservaController extends Controller
         $request->validate([
             'voo' => 'required|string|max:10',
             'data' => 'required|date',
-            'origem' => 'required|string|max:50',
-            'destino' => 'required|string|max:50',
+            'origem_id' => 'required|exists:cidades,id',
+            'destino_id' => 'required|exists:cidades,id',
             'reserva' => 'required|string|max:20',
             'preco' => 'required|numeric|min:0|max:9999.99',
             'name' => 'required|string|max:100',
@@ -203,8 +196,8 @@ class ReservaController extends Controller
         $voo->update([
             'numero_voo' => $request->voo,
             'data' => $request->data,
-            'origem' => $request->origem,
-            'destino' => $request->destino,
+            'origem_id' => $request->origem_id,
+            'destino_id' => $request->destino_id,
         ]);
 
         // Atualiza passageiro
@@ -235,28 +228,30 @@ class ReservaController extends Controller
         return redirect()->route('dashboard')->with('success', 'Reserva excluída com sucesso!');
     }
 
+    /**
+     * Busca avançada (exemplo)
+     */
     public function buscar(Request $request)
     {
-        // Captura apenas campos com valores (filtros aplicados)
         $filtros = array_filter($request->all());
 
-        // Inicia a consulta com joins
         $query = DB::table('reserva')
             ->join('voo', 'reserva.voo_id', '=', 'voo.id')
             ->join('passageiro', 'reserva.passageiro_id', '=', 'passageiro.id')
+            ->join('cidades as origem', 'voo.origem_id', '=', 'origem.id')
+            ->join('cidades as destino', 'voo.destino_id', '=', 'destino.id')
             ->select(
                 'reserva.id',
                 'reserva.numero_reserva',
                 'reserva.preco',
                 'voo.numero_voo',
                 'voo.data',
-                'voo.origem',
-                'voo.destino',
+                'origem.nome as origem_nome',
+                'destino.nome as destino_nome',
                 'passageiro.nome',
                 'passageiro.nif'
             );
 
-        // Aplica filtros dinamicamente
         if (!empty($filtros['voo'])) {
             $query->where('voo.numero_voo', 'like', '%' . $filtros['voo'] . '%');
         }
@@ -269,12 +264,12 @@ class ReservaController extends Controller
             $query->where('reserva.preco', $filtros['preco']);
         }
 
-        if (!empty($filtros['origem'])) {
-            $query->where('voo.origem', 'like', '%' . $filtros['origem'] . '%');
+        if (!empty($filtros['origem_id'])) {
+            $query->where('voo.origem_id', $filtros['origem_id']);
         }
 
-        if (!empty($filtros['destino'])) {
-            $query->where('voo.destino', 'like', '%' . $filtros['destino'] . '%');
+        if (!empty($filtros['destino_id'])) {
+            $query->where('voo.destino_id', $filtros['destino_id']);
         }
 
         if (!empty($filtros['reserva'])) {
@@ -289,11 +284,8 @@ class ReservaController extends Controller
             $query->where('passageiro.nif', $filtros['nif']);
         }
 
-        // Executa a busca
         $resultados = $query->get();
-        dd($resultados);
 
-        // Retorna para a view com os resultados
-        return view('index', compact('resultados'));
+        return view('index', compact('resultados', 'filtros'));
     }
 }
