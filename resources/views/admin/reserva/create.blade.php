@@ -30,19 +30,26 @@
                     <input type="date" id="Data" name="data" class="form-control" value="{{ old('data') }}" required>
                 </div>
 
-                <select id="Origem" name="origem_id" class="form-control" required>
-                    <option value="">Selecione a origem</option>
-                    @foreach($cidades as $cidade)
-                    <option value="{{ $cidade->id }}" {{ old('origem_id') == $cidade->id ? 'selected' : '' }}>{{ $cidade->nome }}</option>
-                    @endforeach
-                </select>
 
-                <select id="Destino" name="destino_id" class="form-control" required>
-                    <option value="">Selecione o destino</option>
-                    @foreach($cidades as $cidade)
-                    <option value="{{ $cidade->id }}" {{ old('destino_id') == $cidade->id ? 'selected' : '' }}>{{ $cidade->nome }}</option>
-                    @endforeach
-                </select>
+                <div class="col-md-3 campo-form mb-2">
+                    <label for="Origem">Origem</label>
+                    <select id="Origem" name="origem_id" class="form-control" required>
+                        <option value="">Selecione a origem</option>
+                        @foreach($cidades as $cidade)
+                        <option value="{{ $cidade->id }}" {{ old('origem_id') == $cidade->id ? 'selected' : '' }}>{{ $cidade->nome }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3 campo-form mb-2">
+                    <label for="Destino">Destino</label>
+                    <select id="Destino" name="destino_id" class="form-control" required>
+                        <option value="">Selecione o destino</option>
+                        @foreach($cidades as $cidade)
+                        <option value="{{ $cidade->id }}" {{ old('destino_id') == $cidade->id ? 'selected' : '' }}>{{ $cidade->nome }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
             </div>
         </fieldset>

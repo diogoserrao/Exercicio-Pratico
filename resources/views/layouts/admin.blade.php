@@ -40,16 +40,17 @@
 
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
                             href="{{ route('dashboard') }}">
                             <i class="fas fa-tachometer-alt me-1"></i> Dashboard
                         </a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('reservas.*') ? 'active' : '' }}"
-                            href="{{ route('dashboard') }}">
-                            <i class="fas fa-star me-1"></i> Reservas
+                        <a class="nav-link" href="{{ route('passageiros.create') }}">
+                            <i class="fas fa-user-plus me-1"></i> Novo Passageiro
                         </a>
                     </li>
 

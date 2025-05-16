@@ -22,28 +22,38 @@
         <fieldset class="mb-3">
             <legend>Dados do Voo</legend>
             <div class="row">
+                
                 <div class="col-md-3 campo-form mb-2">
                     <label for="Voo">Nº do Voo</label>
                     <input type="text" id="Voo" name="voo" class="form-control" value="{{ old('voo', $voo->numero_voo) }}" required>
                 </div>
+
                 <div class="col-md-3 campo-form mb-2">
                     <label for="Data">Data do voo</label>
                     <input type="date" id="Data" name="data" class="form-control" value="{{ old('data', $voo->data) }}" required>
                 </div>
 
-                <select id="Origem" name="origem_id" class="form-control" required>
-                    <option value="">Selecione a origem</option>
-                    @foreach($cidades as $cidade)
-                    <option value="{{ $cidade->id }}" {{ old('origem_id') == $cidade->id ? 'selected' : '' }}>{{ $cidade->nome }}</option>
-                    @endforeach
-                </select>
+                <div class="col-md-3 campo-form mb-2">
+                    <label for="Data">Origem</label>
+                    <select id="Origem" name="origem_id" class="form-control" style="margin-right: 16px; margin-bottom: 16px;" required>
 
-                <select id="Destino" name="destino_id" class="form-control" required>
-                    <option value="">Selecione o destino</option>
-                    @foreach($cidades as $cidade)
-                    <option value="{{ $cidade->id }}" {{ old('destino_id') == $cidade->id ? 'selected' : '' }}>{{ $cidade->nome }}</option>
-                    @endforeach
-                </select>
+                        <option value="">Selecione a origem</option>
+                        @foreach($cidades as $cidade)
+                        <option value="{{ $cidade->id }}" {{ old('origem_id', $voo->origem_id) == $cidade->id ? 'selected' : '' }}>{{ $cidade->nome }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3 campo-form mb-2">
+                    <label for="Data">Destino</label>
+                    <select id="Destino" name="destino_id" class="form-control" style="margin-right: 16px;" required>
+
+                        <option value="">Selecione o destino</option>
+                        @foreach($cidades as $cidade)
+                        <option value="{{ $cidade->id }}" {{ old('destino_id', $voo->destino_id) == $cidade->id ? 'selected' : '' }}>{{ $cidade->nome }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
             </div>
         </fieldset>

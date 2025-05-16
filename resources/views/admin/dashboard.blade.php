@@ -54,5 +54,45 @@
             </tbody>
         </table>
     </div>
+
+    {{-- ...tabela de reservas... --}}
+
+    <h2 class="mt-5">Passageiros</h2>
+    <div class="tabela-scroll">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>NIF</th>
+                    <th>CC/BI</th>
+                    <th>Email</th>
+                    <th>Telefone</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($passageiros as $passageiro)
+                <tr>
+                    <td>{{ $passageiro->nome }}</td>
+                    <td>{{ $passageiro->nif }}</td>
+                    <td>{{ $passageiro->identificacao }}</td>
+                    <td>{{ $passageiro->email }}</td>
+                    <td>{{ $passageiro->telefone }}</td>
+                    <td>
+                        <a href="{{ route('passageiros.edit', $passageiro->id) }}" class="btn btn-primary btn-sm">Editar</a>
+                        <form action="{{ route('passageiros.update', $passageiro->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Tem certeza que deseja excluir este passageiro?')">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+
 </div>
 @endsection

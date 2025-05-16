@@ -18,7 +18,7 @@ return new class extends Migration
             ['nome' => 'Faro', 'pais' => 'Portugal', 'created_at' => now(), 'updated_at' => now()],
             ['nome' => 'Madrid', 'pais' => 'Espanha', 'created_at' => now(), 'updated_at' => now()],
             ['nome' => 'Paris', 'pais' => 'França', 'created_at' => now(), 'updated_at' => now()],
-            ['nome' => 'Fuchal', 'pais' => 'Portugal', 'created_at' => now(), 'updated_at' => now()],
+            ['nome' => 'Funchal', 'pais' => 'Portugal', 'created_at' => now(), 'updated_at' => now()],
         ];
 
         DB::table('cidades')->insert($cidades);

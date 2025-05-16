@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\View\View;
+use App\Models\Passageiro;
 use Illuminate\Support\Facades\DB;
 
 
@@ -30,7 +31,8 @@ class DashboardController extends Controller
             )
             ->get();
 
-        return view('admin.dashboard', compact('resultados'));
+
+        $passageiros = Passageiro::all();
+        return view('admin.dashboard', compact('resultados', 'passageiros'));
     }
-    
 }
